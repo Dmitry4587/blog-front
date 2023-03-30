@@ -20,7 +20,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { ItemStatus } from "../../redux/types";
 
 export const Registration = () => {
-  const [file, setFile] = React.useState("");
+  const [file, setFile] = React.useState<{ url: string; imgId: string }>({ url: "", imgId: "" });
   const [fileStatus, setFileStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
   const [errorMessage, setErrorMessage] = React.useState("");
   const userStatus = useAppSelector(userStatusSelector);
@@ -34,7 +34,7 @@ export const Registration = () => {
       name: "",
       email: "",
       password: "",
-      avatar: "",
+      avatar: { url: "", imgId: "" },
     },
     validationSchema: registrSchema,
     onSubmit: async (registrFormData) => {
@@ -66,8 +66,8 @@ export const Registration = () => {
         setFileStatus(ItemStatus.LOADING);
         const formData = new FormData();
         formData.append("image", file);
-        const { data } = await axios.post("/upload", formData);
-        setFile(data.url);
+        const { data } = await axios.post<{ url: string; imgId: string }>("/upload", formData);
+        setFile(data);
         setFileStatus(ItemStatus.LOADED);
       } catch (e) {
         setFileStatus(ItemStatus.LOADED);
@@ -97,9 +97,12 @@ export const Registration = () => {
   }
   const onClickDeletePhoto = async () => {
     try {
-      await axios.delete("/uploads", { data: { file } });
-      setFile("");
+      setFileStatus(ItemStatus.LOADING);
+      await axios.delete(`/upload/${file.imgId}`);
+      setFile({ url: "", imgId: "" });
+      setFileStatus(ItemStatus.LOADED);
     } catch (e) {
+      setFileStatus(ItemStatus.LOADED);
       const error = handleServerError(e);
       setErrorMessage(error);
     }
@@ -118,11 +121,18 @@ export const Registration = () => {
             <Skeleton variant="circular" width={100} height={100} />
           ) : (
             <>
-              <Avatar sx={{ width: 100, height: 100 }} src={file} />
-              <Button className={styles.button} onClick={() => ref?.current?.click()} size="medium" variant="contained">
-                Загрузить фото
-              </Button>
-              {file && (
+              <Avatar sx={{ width: 100, height: 100 }} src={file.url} />
+              {!file.url && (
+                <Button
+                  className={styles.button}
+                  onClick={() => ref?.current?.click()}
+                  size="medium"
+                  variant="contained"
+                >
+                  Загрузить фото
+                </Button>
+              )}
+              {file.url && (
                 <Button
                   className={styles.button}
                   onClick={onClickDeletePhoto}
@@ -130,7 +140,7 @@ export const Registration = () => {
                   variant="contained"
                   color="error"
                 >
-                  Удалить
+                  Удалить фото
                 </Button>
               )}
             </>

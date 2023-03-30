@@ -2,7 +2,10 @@ export interface IUser {
   _id: string;
   name: string;
   email: string;
-  avatar?: string;
+  avatar?: {
+    url: string,
+    imgId: string
+  };
   password: string;
 }
 
@@ -23,7 +26,10 @@ export interface IPost {
   _id: string;
   title: string;
   text: string;
-  img?: string;
+  img?: {
+    url: string,
+    imgId: string
+  };
   tags?: string[];
   comments?: IComment[];
   user: IUser;

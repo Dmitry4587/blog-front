@@ -14,13 +14,13 @@ import ErrorMessage from "../../components/ErrorMessage";
 import ErrorPage from "../ErrorPage";
 import { nanoid } from "@reduxjs/toolkit";
 import { useAppSelector } from "../../redux/hooks";
-import { ItemStatus } from "../../redux/types";
+import { IPost, ItemStatus } from "../../redux/types";
 
 export const AddPost = () => {
   const isAuth = useAppSelector(userSelector);
   const [text, setText] = React.useState("");
   const [title, setTitle] = React.useState("");
-  const [img, setImg] = React.useState("");
+  const [img, setImg] = React.useState<{ url: string; imgId: string }>({ url: "", imgId: "" });
   const [photoStatus, setPhotoStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
   const [postStatus, setPostStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -59,8 +59,8 @@ export const AddPost = () => {
   const onClickRemoveImg = async () => {
     try {
       setPhotoStatus(ItemStatus.LOADING);
-      await axios.delete("/uploads", { data: { file: img } });
-      setImg("");
+      await axios.delete(`/upload/${img.imgId}`);
+      setImg({ url: "", imgId: "" });
       setPhotoStatus(ItemStatus.LOADED);
     } catch (e) {
       setPhotoStatus(ItemStatus.LOADED);
@@ -71,11 +71,15 @@ export const AddPost = () => {
   const fetchPost = React.useCallback(async () => {
     if (id) {
       try {
-        const { data } = await axios.get(`posts/${id}`);
+        const { data } = await axios.get<IPost>(`posts/${id}`);
         setText(data.text);
         setTitle(data.title);
-        setImg(data.img);
-        setTags(data.tags);
+        if (data.img) {
+          setImg(data.img);
+        }
+        if (data.tags) {
+          setTags(data.tags);
+        }
       } catch (e) {
         setPostStatus(ItemStatus.ERROR);
       }
@@ -102,8 +106,8 @@ export const AddPost = () => {
         setPhotoStatus(ItemStatus.LOADING);
         const formData = new FormData();
         formData.append("image", fileImg);
-        const { data } = await axios.post("/upload", formData);
-        setImg(data.url);
+        const { data } = await axios.post<{ url: string; imgId: string }>("/upload", formData);
+        setImg(data);
         setPhotoStatus(ItemStatus.LOADED);
       } catch (e) {
         setPhotoStatus(ItemStatus.LOADED);
@@ -144,15 +148,17 @@ export const AddPost = () => {
   return (
     <Paper style={{ padding: 30 }}>
       <div className={styles.buttonWrapper}>
-        <Button
-          onClick={() => inputRef?.current?.click()}
-          variant="outlined"
-          size="large"
-          disabled={photoStatus === ItemStatus.LOADING}
-        >
-          Загрузить превью
-        </Button>
-        {img && (
+        {!img.url && (
+          <Button
+            onClick={() => inputRef?.current?.click()}
+            variant="outlined"
+            size="large"
+            disabled={photoStatus === ItemStatus.LOADING}
+          >
+            Загрузить превью
+          </Button>
+        )}
+        {img.url && (
           <Button
             disabled={photoStatus === ItemStatus.LOADING}
             onClick={onClickRemoveImg}
@@ -166,9 +172,9 @@ export const AddPost = () => {
       </div>
       <input ref={inputRef} onChange={onChangeFile} type="file" hidden />
       <br />
-      {img && (
+      {img.url && (
         <div className={styles.image}>
-          <img src={img} alt="#" />
+          <img src={img.url} alt={img.imgId} />
         </div>
       )}
       <br />

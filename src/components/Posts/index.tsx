@@ -35,9 +35,9 @@ const Posts = () => {
           key={post._id}
           id={post._id}
           title={post.title}
-          imageUrl={post.img || ""}
+          imageUrl={post?.img?.url || ""}
           user={{
-            avatarUrl: post.user.avatar,
+            avatarUrl: post?.user?.avatar?.url || "",
             fullName: post.user.name,
           }}
           createdAt={formatDate(post.createdAt)}

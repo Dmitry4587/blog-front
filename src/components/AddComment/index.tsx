@@ -30,7 +30,7 @@ export const Index = ({ setPostData }: { setPostData: (post: IPost) => void }) =
   return (
     <>
       <div className={styles.root}>
-        <Avatar classes={{ root: styles.avatar }} src={user?.avatar} />
+        <Avatar classes={{ root: styles.avatar }} src={user?.avatar?.url} />
         <div className={styles.form}>
           <TextField
             value={text}

@@ -57,9 +57,9 @@ export const FullPost = () => {
         <Post
           id={postData._id}
           title={postData.title}
-          imageUrl={postData.img || ""}
+          imageUrl={postData.img?.url || ""}
           user={{
-            avatarUrl: postData.user.avatar,
+            avatarUrl: postData.user.avatar?.url || "",
             fullName: postData.user.name,
           }}
           createdAt={formatDate(postData.createdAt)}

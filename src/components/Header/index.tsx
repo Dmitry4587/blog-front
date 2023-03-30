@@ -29,6 +29,7 @@ export const Header = () => {
         </>
       );
     }
+    console.log(isAuth?.avatar?.url)
 
     return (
       <>
@@ -41,7 +42,7 @@ export const Header = () => {
           </Button>
         </Link>
         <Link to="/user">
-          <Avatar className={styles.avatar} src={isAuth.avatar} />
+          <Avatar className={styles.avatar} src={isAuth?.avatar?.url} />
         </Link>
       </>
     );

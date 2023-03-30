@@ -13,7 +13,7 @@ import { deletePostById } from "../../redux/slices/posts";
 import { fetchAllComments, fetchAllTags } from "../../redux/thunks/postThunks";
 import axios from "../../axios";
 import handleServerError from "../../utils/handleServerError";
-import { IUser, TTags } from "../../redux/types";
+import { TTags } from "../../redux/types";
 import { useAppDispatch } from "../../redux/hooks";
 
 interface IPostProps {
@@ -22,8 +22,8 @@ interface IPostProps {
   createdAt: string;
   imageUrl: string;
   user: {
-    avatarUrl: IUser["avatar"];
-    fullName: IUser["name"];
+    avatarUrl: string;
+    fullName: string;
   };
   viewsCount: number;
   commentsCount: number;

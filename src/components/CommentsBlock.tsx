@@ -89,7 +89,7 @@ export const CommentsBlock = ({ children, setPostData, comments, isLoading, isEr
             )}
 
             <ListItemAvatar>
-              <Avatar alt={obj?.user.name} src={obj?.user.avatar} />
+              <Avatar alt={obj?.user.name} src={obj?.user.avatar?.url} />
             </ListItemAvatar>
             <ListItemText
               primary={obj?.user.name}
