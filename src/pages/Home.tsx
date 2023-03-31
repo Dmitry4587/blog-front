@@ -7,12 +7,14 @@ import Posts from "../components/Posts";
 import FilterPosts from "../components/FilterPosts";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { ItemStatus } from "../redux/types";
+import TagsInput from "react-tagsinput";
 
 export const Home = () => {
   const comments = useAppSelector(commentsSelector);
   const commentsStatus = useAppSelector(commentsStatusSelector);
   const isCommentsLoading = commentsStatus === ItemStatus.LOADING;
   const isCommentsError = commentsStatus === ItemStatus.ERROR;
+  const [tags, setTags] = React.useState<string[]>([]);
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -20,8 +22,13 @@ export const Home = () => {
     dispatch(fetchAllComments());
   }, [dispatch]);
 
+  const handleChange = (tags: string[]) => {
+    setTags(tags);
+  };
+
   return (
     <>
+      <TagsInput className="react-tagsinput" value={tags} onChange={handleChange} />
       <FilterPosts />
       <div className="wrapper">
         <div>
