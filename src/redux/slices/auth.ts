@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { ItemStatus, IUser } from "../types";
+import { ItemStatus, IUser, IAuthUser } from "../types";
 
 interface IInitialState {
   data: IUser | null;
@@ -30,9 +30,9 @@ const authSlice = createSlice({
       )
       .addMatcher(
         (action) => action.type.endsWith("User/fulfilled"),
-        (state, action: PayloadAction<IUser>) => {
+        (state, action: PayloadAction<IAuthUser>) => {
           state.status = ItemStatus.LOADED;
-          state.data = action.payload;
+          state.data = action.payload.user;
         }
       )
       .addMatcher(

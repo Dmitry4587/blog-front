@@ -30,7 +30,7 @@ export const Home = () => {
         </div>
         <div className="info">
           <TagsBlock />
-          <CommentsBlock comments={comments} isLoading={isCommentsLoading} isError={isCommentsError} />
+          <CommentsBlock isFull={false} comments={comments} isLoading={isCommentsLoading} isError={isCommentsError} />
         </div>
       </div>
       <PaginationComponent />

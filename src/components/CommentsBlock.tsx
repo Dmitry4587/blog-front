@@ -16,9 +16,17 @@ interface ICommentsBlock {
   comments: IComment[];
   isLoading: boolean;
   isError?: boolean;
+  isFull: boolean;
 }
 
-export const CommentsBlock = ({ children, setPostData, comments, isLoading, isError = false }: ICommentsBlock) => {
+export const CommentsBlock = ({
+  children,
+  setPostData,
+  comments,
+  isLoading,
+  isError = false,
+  isFull,
+}: ICommentsBlock) => {
   const [errorMessage, setErrorMessage] = React.useState("");
   const { id } = useParams();
 
@@ -53,8 +61,8 @@ export const CommentsBlock = ({ children, setPostData, comments, isLoading, isEr
     return comments.map((comment) => {
       return (
         <Comment
+          isPostComment={isFull}
           comment={comment}
-          isPostComment={Boolean(children)}
           setPostData={setPostData}
           setErrorMessage={setErrorMessage}
           postId={id}

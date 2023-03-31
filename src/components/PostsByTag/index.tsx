@@ -31,7 +31,7 @@ const PostsByTag = () => {
         </div>
         <div className="info">
           <TagsBlock tag={tag} />
-          <CommentsBlock comments={comments} isLoading={isCommentsLoading} isError={isCommentsError} />
+          <CommentsBlock isFull={false} comments={comments} isLoading={isCommentsLoading} isError={isCommentsError} />
         </div>
       </div>
       <PaginationComponent />

@@ -71,7 +71,7 @@ export const FullPost = () => {
         >
           <ReactMarkdown children={postData.text} />
         </Post>
-        <CommentsBlock comments={postData.comments || []} setPostData={setPostData} isLoading={isLoading}>
+        <CommentsBlock isFull comments={postData.comments || []} setPostData={setPostData} isLoading={isLoading}>
           {auth && <Index setPostData={setPostData} />}
         </CommentsBlock>
       </>

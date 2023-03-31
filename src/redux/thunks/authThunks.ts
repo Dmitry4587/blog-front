@@ -18,7 +18,7 @@ export const authUser = createAsyncThunk(
 
 export const fetchUser = createAsyncThunk("auth/fetchUser", async (_, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get<IUser>("/user/me");
+    const { data } = await axios.get<IAuthUser>("/user/me");
     return data;
   } catch (e) {
     const err = handleServerError(e);
@@ -43,7 +43,7 @@ export const updateUser = createAsyncThunk(
   "auth/updateUser",
   async (registrFormData: Omit<IUser, "_id">, { rejectWithValue }) => {
     try {
-      const { data } = await axios.patch<IUser>("/user/update", registrFormData);
+      const { data } = await axios.patch<IAuthUser>("/user/update", registrFormData);
       return data;
     } catch (e) {
       const err = handleServerError(e);
