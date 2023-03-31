@@ -3,10 +3,11 @@ export interface IUser {
   name: string;
   email: string;
   avatar?: {
-    url: string,
-    imgId: string
+    url: string;
+    imgId: string;
   };
   password: string;
+  favComments?: IComment[];
 }
 
 export interface IAuthUser {
@@ -18,6 +19,7 @@ export interface IComment {
   _id: string;
   user: IUser;
   text: string;
+  commentLikes: number;
 }
 
 export type TTags = string[];
@@ -27,8 +29,8 @@ export interface IPost {
   title: string;
   text: string;
   img?: {
-    url: string,
-    imgId: string
+    url: string;
+    imgId: string;
   };
   tags?: string[];
   comments?: IComment[];
@@ -36,6 +38,12 @@ export interface IPost {
   viewCount: number;
   commentsCount?: number;
   createdAt: Date;
+}
+
+export interface IPostRes {
+  posts: IPost[];
+  totalPages: number;
+  currentPage: number;
 }
 
 export enum ItemStatus {

@@ -12,7 +12,7 @@ import { tagsSelector, tagsStatusSelector } from "../redux/selectors/postsSelect
 import { useAppSelector } from "../redux/hooks";
 import { ItemStatus } from "../redux/types";
 
-export const TagsBlock = () => {
+export const TagsBlock = ({ tag }: { tag?: string }) => {
   const tags = useAppSelector(tagsSelector);
   const tagsStatus = useAppSelector(tagsStatusSelector);
   const isTagsLoading = tagsStatus === ItemStatus.LOADING;
@@ -59,7 +59,7 @@ export const TagsBlock = () => {
   };
 
   return (
-    <SideBlock title="Тэги">
+    <SideBlock title={tag ? `Посты по тегу` : "Популярные теги"}>
       <List>{createContent()}</List>
     </SideBlock>
   );

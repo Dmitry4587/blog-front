@@ -50,7 +50,6 @@ export const Post = ({
 }: IPostProps) => {
   const [isDel, setDelete] = React.useState(false);
   const dispatch = useAppDispatch();
-  console.log(imageUrl);
 
   const onClickDelete = async (id: string) => {
     try {

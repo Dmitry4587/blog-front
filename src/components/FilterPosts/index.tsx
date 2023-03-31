@@ -4,9 +4,11 @@ import Tab from "@mui/material/Tab";
 import { fetchAllPosts } from "../../redux/thunks/postThunks";
 import { userSelector } from "../../redux/selectors/authSelectors";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { currentPageSelector } from "../../redux/selectors/postsSelectors";
 
 const FilterPosts = ({ tag }: { tag?: string }) => {
   const [postsFilter, setPostsFilter] = React.useState("new");
+  const currentPage = useAppSelector(currentPageSelector);
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
 
@@ -22,11 +24,11 @@ const FilterPosts = ({ tag }: { tag?: string }) => {
 
   React.useEffect(() => {
     if (postsFilter === "my" && user) {
-      dispatch(fetchAllPosts({ tag, userId: user._id }));
+      dispatch(fetchAllPosts({ tag, userId: user._id, currentPage }));
     } else {
-      dispatch(fetchAllPosts({ tag, postsFilter }));
+      dispatch(fetchAllPosts({ tag, postsFilter, currentPage }));
     }
-  }, [dispatch, postsFilter, tag, user]);
+  }, [dispatch, postsFilter, tag, user, currentPage]);
 
   return (
     <>

@@ -6,7 +6,6 @@ import "easymde/dist/easymde.min.css";
 import SimpleMDE from "react-simplemde-editor/dist/SimpleMdeReact";
 import styles from "./AddPost.module.scss";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { TagsInput } from "react-tag-input-component";
 import axios from "../../axios";
 import { userSelector } from "../../redux/selectors/authSelectors";
 import handleServerError from "../../utils/handleServerError";
@@ -15,6 +14,7 @@ import ErrorPage from "../ErrorPage";
 import { nanoid } from "@reduxjs/toolkit";
 import { useAppSelector } from "../../redux/hooks";
 import { IPost, ItemStatus } from "../../redux/types";
+import TagsInput from "react-tagsinput";
 
 export const AddPost = () => {
   const isAuth = useAppSelector(userSelector);
@@ -49,6 +49,10 @@ export const AddPost = () => {
   const onChangeText = React.useCallback((value: string) => {
     setText(value);
   }, []);
+
+  const handleChange = (tags: string[]) => {
+    setTags(tags);
+  };
 
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length < 40 && e.target.value !== " ") {
@@ -188,15 +192,12 @@ export const AddPost = () => {
           onChange={onChangeTitle}
         />
         <TagsInput
-          beforeAddValidate={(tag) => {
-            return tag.length < 20 && tag !== " " && /^(|[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я\s]*)$/.test(tag);
-          }}
-          separators={[" "]}
+          validationRegex={/^[^\s][a-zA-Zа-яА-Я\s]{2,22}$/}
+          onValidationReject={() => setErrorMessage("Не допустимое значение")}
+          onlyUnique
+          className="react-tagsinput"
           value={tags}
-          onChange={setTags}
-          onExisting={() => setErrorMessage("Такой тег уже есть")}
-          name="fruits"
-          placeHolder="Тэги"
+          onChange={handleChange}
         />
         <SimpleMDE className={styles.editor} value={text} onChange={onChangeText} options={options} />
         <div className={styles.buttons}>

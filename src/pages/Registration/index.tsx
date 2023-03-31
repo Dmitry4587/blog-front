@@ -121,7 +121,7 @@ export const Registration = () => {
             <Skeleton variant="circular" width={100} height={100} />
           ) : (
             <>
-              <Avatar sx={{ width: 100, height: 100 }} src={file.url} />
+              <Avatar sx={{ width: 150, height: 150 }} src={file.url} />
               {!file.url && (
                 <Button
                   className={styles.button}

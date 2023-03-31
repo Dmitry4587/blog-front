@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchAllPosts, fetchAllTags, fetchAllComments } from "../thunks/postThunks";
-import { IComment, IPost, TTags } from "../types";
+import { IComment, IPost, IPostRes, TTags } from "../types";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { ItemStatus } from "../types";
 
@@ -8,6 +8,8 @@ interface IInitialState {
   posts: {
     items: IPost[];
     status: ItemStatus;
+    totalPages: number;
+    currentPage: number;
   };
   tags: {
     items: TTags;
@@ -23,6 +25,8 @@ const initialState: IInitialState = {
   posts: {
     items: [],
     status: ItemStatus.LOADING,
+    totalPages: 1,
+    currentPage: 1,
   },
   tags: {
     items: [],
@@ -41,6 +45,9 @@ const postsSlice = createSlice({
     deletePostById: (state, action) => {
       state.posts.items = state.posts.items.filter((items) => items._id !== action.payload);
     },
+    setCurrentPage: (state, action) => {
+      state.posts.currentPage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -48,8 +55,9 @@ const postsSlice = createSlice({
         state.posts.items = [];
         state.posts.status = ItemStatus.LOADING;
       })
-      .addCase(fetchAllPosts.fulfilled, (state, action: PayloadAction<IPost[]>) => {
-        state.posts.items = action.payload;
+      .addCase(fetchAllPosts.fulfilled, (state, action: PayloadAction<IPostRes>) => {
+        state.posts.items = action.payload.posts;
+        state.posts.totalPages = action.payload.totalPages;
         state.posts.status = ItemStatus.LOADED;
       })
       .addCase(fetchAllPosts.rejected, (state) => {
@@ -84,4 +92,4 @@ const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
-export const { deletePostById } = postsSlice.actions;
+export const { deletePostById, setCurrentPage } = postsSlice.actions;

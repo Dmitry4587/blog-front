@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { fetchAllComments, fetchAllTags } from "../../redux/thunks/postThunks";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { ItemStatus } from "../../redux/types";
+import PaginationComponent from "../Pagination";
 
 const PostsByTag = () => {
   const comments = useAppSelector(commentsSelector);
@@ -29,10 +30,11 @@ const PostsByTag = () => {
           <Posts />
         </div>
         <div className="info">
-          <TagsBlock />
+          <TagsBlock tag={tag} />
           <CommentsBlock comments={comments} isLoading={isCommentsLoading} isError={isCommentsError} />
         </div>
       </div>
+      <PaginationComponent />
     </>
   );
 };
