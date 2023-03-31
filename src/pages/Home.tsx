@@ -28,7 +28,6 @@ export const Home = () => {
 
   return (
     <>
-      <TagsInput className="react-tagsinput" value={tags} onChange={handleChange} />
       <FilterPosts />
       <div className="wrapper">
         <div>
