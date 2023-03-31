@@ -174,7 +174,7 @@ export const AddPost = () => {
           </Button>
         )}
       </div>
-      <input ref={inputRef} onChange={onChangeFile} type="file" hidden />
+      <input ref={inputRef} onBlur={onChangeFile} type="file" hidden />
       <br />
       {img.url && (
         <div className={styles.image}>
