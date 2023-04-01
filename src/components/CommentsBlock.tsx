@@ -73,7 +73,7 @@ export const CommentsBlock = ({
 
   return (
     <>
-      <SideBlock title="Комментарии">
+      <SideBlock title="Популярные комментарии">
         <List>{createContent()}</List>
         {children}
       </SideBlock>

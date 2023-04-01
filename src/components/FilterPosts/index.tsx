@@ -5,6 +5,7 @@ import { fetchAllPosts } from "../../redux/thunks/postThunks";
 import { userSelector } from "../../redux/selectors/authSelectors";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { currentPageSelector } from "../../redux/selectors/postsSelectors";
+import { setCurrentPage } from "../../redux/slices/posts";
 
 const FilterPosts = ({ tag }: { tag?: string }) => {
   const [postsFilter, setPostsFilter] = React.useState("new");
@@ -14,6 +15,7 @@ const FilterPosts = ({ tag }: { tag?: string }) => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setPostsFilter(newValue);
+    dispatch(setCurrentPage(1));
   };
 
   React.useEffect(() => {

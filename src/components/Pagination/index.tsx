@@ -1,13 +1,12 @@
 import React from "react";
 import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { setCurrentPage } from "../../redux/slices/posts";
 import { currentPageSelector, totalPagesSelector } from "../../redux/selectors/postsSelectors";
 
 const PaginationComponent = () => {
   const currentPage = useAppSelector(currentPageSelector);
-  const TotalPages = useAppSelector(totalPagesSelector);
+  const totalPages = useAppSelector(totalPagesSelector);
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -17,10 +16,18 @@ const PaginationComponent = () => {
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     dispatch(setCurrentPage(value));
   };
+
   return (
-    <Stack spacing={2}>
-      <Pagination count={TotalPages} page={currentPage} onChange={handleChange} />
-    </Stack>
+    <>
+      {totalPages > 1 && (
+        <Pagination
+          sx={{ marginTop: "40px", marginBottom: "40px" }}
+          count={totalPages}
+          page={currentPage}
+          onChange={handleChange}
+        />
+      )}
+    </>
   );
 };
 

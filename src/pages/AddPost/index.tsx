@@ -174,7 +174,7 @@ export const AddPost = () => {
           </Button>
         )}
       </div>
-      <input ref={inputRef} onBlur={onChangeFile} type="file" hidden />
+      <input ref={inputRef} onChange={onChangeFile} type="file" hidden />
       <br />
       {img.url && (
         <div className={styles.image}>
@@ -192,10 +192,12 @@ export const AddPost = () => {
           onChange={onChangeTitle}
         />
         <TagsInput
-          validationRegex={/^[^\s][a-zA-Zа-яА-Я\s]{2,22}$/}
+          validationRegex={/^[^\s][a-zA-Zа-яА-Я\s]{2,30}$/}
           onValidationReject={() => setErrorMessage("Не допустимое значение")}
           onlyUnique
           className="react-tagsinput"
+          inputProps={{ placeholder: "теги" }}
+          addKeys={[188]}
           value={tags}
           onChange={handleChange}
         />

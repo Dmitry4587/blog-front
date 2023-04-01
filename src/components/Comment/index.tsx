@@ -50,27 +50,33 @@ const Comment = ({ comment, isPostComment, setPostData, setErrorMessage, postId 
 
   return (
     <React.Fragment key={comment._id}>
-      <ListItem sx={{ paddingTop: "15px" }} alignItems="flex-start">
+      <ListItem
+        sx={isPostComment ? { padding: "0 15px 45px 15px" } : { padding: "10px 10px 0 10px" }}
+        alignItems="flex-start"
+      >
         {userInfo && isPostComment && userInfo._id === comment.user._id && (
           <IconButton
-            sx={{ position: "absolute", top: "5px", right: "20px" }}
+            sx={{ position: "absolute", bottom: "10px", left: "210px", padding: "0" }}
             disabled={disabledButton}
             onClick={() => onClickDel(comment._id)}
             edge="end"
             aria-label="delete"
           >
-            <DeleteIcon />
+            <Chip icon={<DeleteIcon sx={{ fontSize: "16px" }} />} label="Удалить" />
           </IconButton>
         )}
         {isPostComment && (
           <IconButton
-            sx={{ position: "absolute", top: "45px", right: "20px" }}
+            sx={{ position: "absolute", bottom: "10px", left: "70px", padding: "0" }}
             disabled={disabledButton || !userInfo}
             onClick={() => onClickLikeOrDislike(comment._id)}
             edge="end"
             aria-label="delete"
           >
-            <Chip icon={<ThumbUpIcon />} label={comment.commentLikes} />
+            <Chip
+              icon={<ThumbUpIcon sx={{ fontSize: "16px" }} />}
+              label={`Нравится  ${comment.commentLikes > 0 ? comment.commentLikes : ""}`}
+            />
           </IconButton>
         )}
         <ListItemAvatar>

@@ -21,19 +21,21 @@ export const Home = () => {
     dispatch(fetchAllComments());
   }, [dispatch]);
 
+  console.log(comments);
+
   return (
     <>
       <FilterPosts />
       <div className="wrapper">
         <div>
           <Posts />
+          <PaginationComponent />
         </div>
         <div className="info">
           <TagsBlock />
           <CommentsBlock isFull={false} comments={comments} isLoading={isCommentsLoading} isError={isCommentsError} />
         </div>
       </div>
-      <PaginationComponent />
     </>
   );
 };
