@@ -2,21 +2,31 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import Avatar from "@mui/material/Avatar";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { userSelector } from "../../redux/selectors/authSelectors";
 import { IPost } from "../../redux/types";
 import axios from "../../axios";
 import handleServerError from "../../utils/handleServerError";
+import { fetchUser } from "../../redux/thunks/authThunks";
+import { useNavigate } from "react-router-dom";
 
 const Comment = ({ comment, isPostComment, setPostData, setErrorMessage, postId }: any) => {
   const userInfo = useAppSelector(userSelector);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [disabledButton, setDisabled] = React.useState(false);
+  const isLiked = Boolean(userInfo?.favComments && userInfo.favComments.find((item) => item._id === comment._id));
+  const isAbleDelete = userInfo && isPostComment && userInfo._id === comment.user._id;
+  const isLikeCountShow = comment.commentLikes > 0 ? comment.commentLikes : "";
+  const likeColor = isLiked ? "error" : disabledButton ? "default" : "info";
+  const isCutText =
+    !isPostComment && comment?.text.length > 30 ? comment?.text.substring(0, 30) + "..." : comment?.text;
 
   const onClickDel = async (commentId: string) => {
     setDisabled(true);
@@ -33,6 +43,18 @@ const Comment = ({ comment, isPostComment, setPostData, setErrorMessage, postId 
     }
   };
 
+  const onClickToPost = async (commentId: string) => {
+    if (!isPostComment) {
+      try {
+        const { data } = await axios.get(`/posts/${commentId}/comment`);
+        navigate(`posts/${data.postId._id}`);
+      } catch (e) {
+        const error = handleServerError(e);
+        setErrorMessage(error);
+      }
+    }
+  };
+
   const onClickLikeOrDislike = async (commentId: string) => {
     try {
       setDisabled(true);
@@ -40,6 +62,7 @@ const Comment = ({ comment, isPostComment, setPostData, setErrorMessage, postId 
       if (setPostData) {
         setPostData(data);
       }
+      dispatch(fetchUser());
       setDisabled(false);
     } catch (e) {
       setDisabled(false);
@@ -51,44 +74,47 @@ const Comment = ({ comment, isPostComment, setPostData, setErrorMessage, postId 
   return (
     <React.Fragment key={comment._id}>
       <ListItem
-        sx={isPostComment ? { padding: "0 15px 45px 15px" } : { padding: "10px 10px 0 10px" }}
+        onClick={() => onClickToPost(comment._id)}
+        sx={{ paddingBottom: "0px", cursor: isPostComment ? "auto" : "pointer" }}
         alignItems="flex-start"
       >
-        {userInfo && isPostComment && userInfo._id === comment.user._id && (
+        <ListItemAvatar>
+          <Avatar alt={comment?.user.name} src={comment?.user.avatar?.url} />
+        </ListItemAvatar>
+        <ListItemText primary={comment?.user.name} secondary={isCutText} />
+      </ListItem>
+      {isPostComment && (
+        <div style={{ display: "flex", alignItems: "center", marginTop: "7px", marginBottom: "9px" }}>
           <IconButton
-            sx={{ position: "absolute", bottom: "10px", left: "210px", padding: "0" }}
-            disabled={disabledButton}
-            onClick={() => onClickDel(comment._id)}
-            edge="end"
-            aria-label="delete"
-          >
-            <Chip icon={<DeleteIcon sx={{ fontSize: "16px" }} />} label="Удалить" />
-          </IconButton>
-        )}
-        {isPostComment && (
-          <IconButton
-            sx={{ position: "absolute", bottom: "10px", left: "70px", padding: "0" }}
+            sx={{ marginLeft: "70px", padding: "0" }}
             disabled={disabledButton || !userInfo}
             onClick={() => onClickLikeOrDislike(comment._id)}
             edge="end"
             aria-label="delete"
           >
-            <Chip
-              icon={<ThumbUpIcon sx={{ fontSize: "16px" }} />}
-              label={`Нравится  ${comment.commentLikes > 0 ? comment.commentLikes : ""}`}
-            />
+            {isLikeCountShow ? (
+              <Chip color={likeColor} icon={<FavoriteIcon sx={{ fontSize: "12px" }} />} label={`${isLikeCountShow}`} />
+            ) : (
+              <FavoriteIcon sx={{ fontSize: "22px" }} />
+            )}
           </IconButton>
-        )}
-        <ListItemAvatar>
-          <Avatar alt={comment?.user.name} src={comment?.user.avatar?.url} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={comment?.user.name}
-          secondary={
-            !isPostComment && comment?.text.length > 30 ? comment?.text.substring(0, 30) + "..." : comment?.text
-          }
-        />
-      </ListItem>
+
+          {isAbleDelete && (
+            <IconButton
+              sx={{ marginLeft: "45px", padding: "0" }}
+              disabled={disabledButton}
+              onClick={() => onClickDel(comment._id)}
+              edge="end"
+              aria-label="delete"
+            >
+              <Chip
+                icon={<DeleteIcon color={disabledButton ? "disabled" : "error"} sx={{ fontSize: "16px" }} />}
+                label="Удалить"
+              />
+            </IconButton>
+          )}
+        </div>
+      )}
       <Divider variant="inset" component="li" />
     </React.Fragment>
   );

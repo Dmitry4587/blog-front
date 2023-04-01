@@ -7,7 +7,7 @@ import Avatar from "@mui/material/Avatar";
 import styles from "./Login.module.scss";
 import { useFormik } from "formik";
 import { registrSchema } from "../../utils/validationsSchemas";
-import { registrUser, updateUser } from "../../redux/thunks/authThunks";
+import { fetchUser, registrUser, updateUser } from "../../redux/thunks/authThunks";
 import { Navigate, useNavigate } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import axios from "../../axios";

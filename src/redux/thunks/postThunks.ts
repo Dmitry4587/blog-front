@@ -16,7 +16,7 @@ export const fetchAllPosts = createAsyncThunk(
     currentPage: number;
   }) => {
     const { data } = await axios<IPostRes>(
-      `/posts?sort=${postsFilter}&tag=${tag}&user=${userId}&limit=2&page=${currentPage}`
+      `/posts?sort=${postsFilter}&tag=${tag}&user=${userId}&limit=3&page=${currentPage}`
     );
     return data;
   }
