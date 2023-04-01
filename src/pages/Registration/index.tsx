@@ -116,7 +116,7 @@ export const Registration = () => {
 
       <form onSubmit={formik.handleSubmit}>
         <div className={styles.avatar}>
-          <input ref={ref} type="file" onChange={onChangeSetFile} hidden />
+          <input accept=".jpg,.jpeg,.png" ref={ref} type="file" onChange={onChangeSetFile} hidden />
           {fileStatus === ItemStatus.LOADING ? (
             <Skeleton variant="circular" width={100} height={100} />
           ) : (
