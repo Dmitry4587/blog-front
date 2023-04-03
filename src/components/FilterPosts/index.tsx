@@ -19,6 +19,10 @@ const FilterPosts = ({ tag }: { tag?: string }) => {
   };
 
   React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
+
+  React.useEffect(() => {
     if (!user) {
       setPostsFilter("new");
     }

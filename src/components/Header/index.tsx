@@ -4,11 +4,14 @@ import styles from "./Header.module.scss";
 import Container from "@mui/material/Container";
 import { Link } from "react-router-dom";
 import { setAuth } from "../../redux/slices/auth";
-import { userSelector } from "../../redux/selectors/authSelectors";
+import { userSelector, userStatusSelector } from "../../redux/selectors/authSelectors";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { ItemStatus } from "../../redux/types";
+import { CircularProgress } from "@mui/material";
 
 export const Header = () => {
   const isAuth = useAppSelector(userSelector);
+  const userStatus = useAppSelector(userStatusSelector);
   const dispatch = useAppDispatch();
 
   const onClickLogOut = () => {
@@ -17,6 +20,10 @@ export const Header = () => {
   };
 
   const createButtons = () => {
+    if (userStatus === ItemStatus.LOADING) {
+      return <CircularProgress />;
+    }
+
     if (!isAuth) {
       return (
         <>
@@ -29,7 +36,6 @@ export const Header = () => {
         </>
       );
     }
-    console.log(isAuth?.avatar?.url)
 
     return (
       <>

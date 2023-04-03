@@ -5,23 +5,24 @@ import Button from "@mui/material/Button";
 import "easymde/dist/easymde.min.css";
 import SimpleMDE from "react-simplemde-editor/dist/SimpleMdeReact";
 import styles from "./AddPost.module.scss";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "../../axios";
-import { userSelector } from "../../redux/selectors/authSelectors";
 import handleServerError from "../../utils/handleServerError";
 import ErrorMessage from "../../components/ErrorMessage";
 import ErrorPage from "../ErrorPage";
 import { nanoid } from "@reduxjs/toolkit";
 import { useAppSelector } from "../../redux/hooks";
 import { IPost, ItemStatus } from "../../redux/types";
+import CircularProgress from "@mui/material/CircularProgress";
 import TagsInput from "react-tagsinput";
+import { userStatusSelector } from "../../redux/selectors/authSelectors";
 
 export const AddPost = () => {
-  const isAuth = useAppSelector(userSelector);
   const [text, setText] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [img, setImg] = React.useState<{ url: string; imgId: string }>({ url: "", imgId: "" });
   const [photoStatus, setPhotoStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
+  const userStatus = useAppSelector(userStatusSelector);
   const [postStatus, setPostStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [tags, setTags] = React.useState<string[]>([]);
@@ -85,6 +86,8 @@ export const AddPost = () => {
           setTags(data.tags);
         }
       } catch (e) {
+        const error = handleServerError(e);
+        setErrorMessage(error);
         setPostStatus(ItemStatus.ERROR);
       }
     }
@@ -95,10 +98,10 @@ export const AddPost = () => {
   }, [fetchPost]);
 
   React.useEffect(() => {
-    if (!window.localStorage.getItem("token") || !isAuth) {
+    if (!window.localStorage.getItem("token")) {
       return navigate("/");
     }
-  }, [navigate, isAuth]);
+  }, [navigate]);
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let fileImg: File | null = null;
@@ -146,7 +149,15 @@ export const AddPost = () => {
   };
 
   if (postStatus === ItemStatus.ERROR) {
-    return <ErrorPage />;
+    return <ErrorPage error={errorMessage} />;
+  }
+  if (userStatus === ItemStatus.LOADING) {
+    return (
+      <CircularProgress sx={{ position: "absolute", top: "50%", left: "50%", transform: "transalte(-50%, -50%)" }} />
+    );
+  }
+  if (userStatus === ItemStatus.ERROR) {
+    return <Navigate to="/" />;
   }
 
   return (
@@ -197,7 +208,7 @@ export const AddPost = () => {
           onlyUnique
           className="react-tagsinput"
           inputProps={{ placeholder: "теги" }}
-          addKeys={[188]}
+          addOnBlur
           value={tags}
           onChange={handleChange}
         />

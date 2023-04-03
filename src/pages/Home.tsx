@@ -21,8 +21,6 @@ export const Home = () => {
     dispatch(fetchAllComments());
   }, [dispatch]);
 
-  console.log(comments);
-
   return (
     <>
       <FilterPosts />

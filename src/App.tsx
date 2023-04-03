@@ -7,6 +7,7 @@ import { fetchUser } from "./redux/thunks/authThunks";
 import PostsByTag from "./components/PostsByTag";
 import Page404 from "./pages/Page404";
 import { useAppDispatch } from "./redux/hooks";
+import EditProfile from "./pages/EditProfile";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ function App() {
           <Route path="/posts/:id/edit" element={<AddPost />} />
           <Route path="/posts/add-post" element={<AddPost />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/user" element={<Registration />} />
+          <Route path="/user/*" element={<EditProfile />} />
           <Route path="/registr" element={<Registration />} />
           <Route path="/*" element={<Page404 />} />
         </Routes>

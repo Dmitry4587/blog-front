@@ -5,7 +5,7 @@ import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import { fetchPostById } from "../redux/thunks/postThunks";
 import ReactMarkdown from "react-markdown";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { userSelector } from "../redux/selectors/authSelectors";
 import { formatDate } from "../utils/formatDate";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -15,14 +15,17 @@ import ErrorPage from "./ErrorPage";
 
 export const FullPost = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const [errorMessage, setErrorMessage] = React.useState("");
   const [postData, setPostData] = React.useState<IPost | null>(null);
   const [status, setStatus] = React.useState(ItemStatus.LOADING);
   const auth = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
+  const isOneComment = location.state && postData?.comments?.filter((item) => item._id === location.state);
   const isLoading = status === ItemStatus.LOADING;
   const isError = status === ItemStatus.ERROR;
 
-  const handleFetchError = React.useCallback(async () => {
+  const fetchPost = React.useCallback(async () => {
     setStatus(ItemStatus.LOADING);
     try {
       if (id) {
@@ -32,12 +35,15 @@ export const FullPost = () => {
       }
     } catch (e) {
       setStatus(ItemStatus.ERROR);
+      if (typeof e === "string") {
+        setErrorMessage(e);
+      }
     }
   }, [dispatch, id]);
 
   React.useEffect(() => {
-    handleFetchError();
-  }, [handleFetchError]);
+    fetchPost();
+  }, [fetchPost]);
 
   if (isLoading) {
     return (
@@ -49,7 +55,7 @@ export const FullPost = () => {
   }
 
   if (isError) {
-    return <ErrorPage />;
+    return <ErrorPage error={errorMessage} />;
   }
   if (postData) {
     return (
@@ -71,8 +77,15 @@ export const FullPost = () => {
         >
           <ReactMarkdown children={postData.text} />
         </Post>
-        <CommentsBlock isFull comments={postData.comments || []} setPostData={setPostData} isLoading={isLoading}>
-          {auth && <Index setPostData={setPostData} />}
+
+        <CommentsBlock
+          isFull
+          isOneComment={Boolean(isOneComment)}
+          comments={isOneComment || postData.comments || []}
+          setPostData={setPostData}
+          isLoading={isLoading}
+        >
+          {auth && !isOneComment && <Index setPostData={setPostData} />}
         </CommentsBlock>
       </>
     );

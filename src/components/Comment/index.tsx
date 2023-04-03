@@ -47,7 +47,7 @@ const Comment = ({ comment, isPostComment, setPostData, setErrorMessage, postId 
     if (!isPostComment) {
       try {
         const { data } = await axios.get(`/posts/${commentId}/comment`);
-        navigate(`posts/${data.postId._id}`);
+        navigate(`posts/${data.postId._id}`, { state: commentId });
       } catch (e) {
         const error = handleServerError(e);
         setErrorMessage(error);

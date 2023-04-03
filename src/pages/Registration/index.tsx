@@ -7,12 +7,11 @@ import Avatar from "@mui/material/Avatar";
 import styles from "./Login.module.scss";
 import { useFormik } from "formik";
 import { registrSchema } from "../../utils/validationsSchemas";
-import { fetchUser, registrUser, updateUser } from "../../redux/thunks/authThunks";
+import { registrUser, updateUser } from "../../redux/thunks/authThunks";
 import { Navigate, useNavigate } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import axios from "../../axios";
 import { useLocation } from "react-router-dom";
-import { userSelector } from "../../redux/selectors/authSelectors";
 import handleServerError from "../../utils/handleServerError";
 import ErrorMessage from "../../components/ErrorMessage";
 import { userStatusSelector } from "../../redux/selectors/authSelectors";
@@ -25,7 +24,6 @@ export const Registration = () => {
   const [errorMessage, setErrorMessage] = React.useState("");
   const userStatus = useAppSelector(userStatusSelector);
   const location = useLocation();
-  const isAuth = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const ref = React.useRef<HTMLInputElement>(null);
@@ -77,24 +75,10 @@ export const Registration = () => {
     }
   };
 
-  React.useEffect(() => {
-    if (location.pathname.includes("user") && isAuth) {
-      if (isAuth.avatar) {
-        setFile(isAuth.avatar);
-      }
-      formik.setFieldValue("name", isAuth.name);
-      formik.setFieldValue("email", isAuth.email);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (isAuth && location.pathname.includes("registr")) {
+  if (window.localStorage.getItem("token") && location.pathname.includes("registr")) {
     return <Navigate to="/" />;
   }
 
-  if (!isAuth && location.pathname.includes("user")) {
-    return <Navigate to="/" />;
-  }
   const onClickDeletePhoto = async () => {
     try {
       setFileStatus(ItemStatus.LOADING);

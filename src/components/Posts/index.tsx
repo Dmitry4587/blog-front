@@ -16,7 +16,7 @@ const Posts = () => {
 
   const createPosts = () => {
     if (isPostsLoading) {
-      return [...Array(3)].map((i) => {
+      return [...Array(3)].map((_, i) => {
         return <PostSkeleton key={i} />;
       });
     }

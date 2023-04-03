@@ -3,7 +3,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import List from "@mui/material/List";
 import Skeleton from "@mui/material/Skeleton";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { SideBlock } from "./SideBlock";
 import ErrorMessage from "./ErrorMessage";
 import { IComment, IPost } from "../redux/types";
@@ -15,6 +15,7 @@ interface ICommentsBlock {
   setPostData?: (post: IPost) => void;
   comments: IComment[];
   isLoading: boolean;
+  isOneComment?: boolean;
   isError?: boolean;
   isFull: boolean;
 }
@@ -25,6 +26,7 @@ export const CommentsBlock = ({
   comments,
   isLoading,
   isError = false,
+  isOneComment = false,
   isFull,
 }: ICommentsBlock) => {
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -61,6 +63,7 @@ export const CommentsBlock = ({
     return comments.map((comment) => {
       return (
         <Comment
+          key={comment._id}
           isPostComment={isFull}
           comment={comment}
           setPostData={setPostData}
@@ -73,7 +76,12 @@ export const CommentsBlock = ({
 
   return (
     <>
-      <SideBlock title="Популярные комментарии">
+      <SideBlock title={children ? "Комментарии" : "Популярные комментарии"}>
+        {isOneComment && (
+          <div style={{ padding: "5px 0px 10px 20px" }}>
+            <Link to={`/posts/${id}`}>Перейти ко всем комментариям</Link>
+          </div>
+        )}
         <List>{createContent()}</List>
         {children}
       </SideBlock>

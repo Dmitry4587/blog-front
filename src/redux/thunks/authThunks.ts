@@ -41,7 +41,7 @@ export const registrUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "auth/updateUser",
-  async (registrFormData: Omit<IUser, "_id">, { rejectWithValue }) => {
+  async (registrFormData: Partial<Omit<IUser, "_id">>, { rejectWithValue }) => {
     try {
       const { data } = await axios.patch<IAuthUser>("/user/update", registrFormData);
       return data;

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../axios";
 import { IComment, IPost, TTags, IPostRes } from "../types";
+import handleServerError from "../../utils/handleServerError";
 
 export const fetchAllPosts = createAsyncThunk(
   "posts/fetchAllPosts",
@@ -32,7 +33,12 @@ export const fetchAllTags = createAsyncThunk("posts/fetchAllTags", async (tag: s
   return data;
 });
 
-export const fetchPostById = createAsyncThunk("posts/fetchPostById", async (id: string) => {
-  const { data } = await axios<IPost>(`/posts/${id}`);
-  return data;
+export const fetchPostById = createAsyncThunk("posts/fetchPostById", async (id: string, { rejectWithValue }) => {
+  try {
+    const { data } = await axios<IPost>(`/posts/${id}`);
+    return data;
+  } catch (e) {
+    const err = handleServerError(e);
+    return rejectWithValue(err);
+  }
 });
