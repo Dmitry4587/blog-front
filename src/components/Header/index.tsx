@@ -1,21 +1,22 @@
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
-import styles from "./Header.module.scss";
-import Container from "@mui/material/Container";
-import { Link } from "react-router-dom";
-import { setAuth } from "../../redux/slices/auth";
-import { userSelector, userStatusSelector } from "../../redux/selectors/authSelectors";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { ItemStatus } from "../../redux/types";
-import { CircularProgress } from "@mui/material";
+import React from 'react';
+import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import { CircularProgress } from '@mui/material';
+import Container from '@mui/material/Container';
+import { Link } from 'react-router-dom';
+import { setAuth } from '../../redux/slices/auth';
+import { userSelector, userStatusSelector } from '../../redux/selectors/authSelectors';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { ItemStatus } from '../../redux/types';
+import styles from './Header.module.scss';
 
-export const Header = () => {
+const Header = () => {
   const isAuth = useAppSelector(userSelector);
   const userStatus = useAppSelector(userStatusSelector);
   const dispatch = useAppDispatch();
 
   const onClickLogOut = () => {
-    window.localStorage.removeItem("token");
+    window.localStorage.removeItem('token');
     dispatch(setAuth(null));
   };
 
@@ -67,3 +68,4 @@ export const Header = () => {
     </div>
   );
 };
+export default Header;

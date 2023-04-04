@@ -1,12 +1,12 @@
-import React from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-import { Link } from "react-router-dom";
-import { userSelector } from "../../../redux/selectors/authSelectors";
-import { useAppSelector } from "../../../redux/hooks";
+import React from 'react';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import { Link } from 'react-router-dom';
+import { userSelector } from '../../../redux/selectors/authSelectors';
+import { useAppSelector } from '../../../redux/hooks';
 
 const SettingsList = () => {
   const user = useAppSelector(userSelector);
@@ -24,7 +24,7 @@ const SettingsList = () => {
       <Link to="name">
         <ListItem disablePadding>
           <ListItemButton>
-            <ListItemText primary="Имя" secondary={user?.name || "Изменить имя"} />
+            <ListItemText primary="Имя" secondary={user?.name || 'Изменить имя'} />
           </ListItemButton>
         </ListItem>
       </Link>
@@ -32,7 +32,7 @@ const SettingsList = () => {
       <Link to="email">
         <ListItem disablePadding>
           <ListItemButton>
-            <ListItemText primary="Почта" secondary={user?.email || "Изменить почту"} />
+            <ListItemText primary="Почта" secondary={user?.email || 'Изменить почту'} />
           </ListItemButton>
         </ListItem>
       </Link>

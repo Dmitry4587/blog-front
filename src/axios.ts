@@ -1,11 +1,12 @@
-import axios from "axios";
+/* eslint-disable no-param-reassign */
+import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API || "http://localhost:8000",
+  baseURL: process.env.REACT_APP_API || 'http://localhost:8000',
 });
 
 instance.interceptors.request.use((config) => {
-  config.headers.Authorization = window.localStorage.getItem("token");
+  config.headers.Authorization = window.localStorage.getItem('token');
   return config;
 });
 

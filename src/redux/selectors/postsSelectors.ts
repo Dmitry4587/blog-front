@@ -1,5 +1,5 @@
-import { createSelector } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { createSelector } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
 export const postsSelector = (state: RootState) => state.posts.posts;
 export const tagsStatusSelector = (state: RootState) => state.posts.tags.status;
@@ -10,5 +10,5 @@ export const currentPageSelector = (state: RootState) => state.posts.posts.curre
 export const totalPagesSelector = (state: RootState) => state.posts.posts.totalPages;
 export const tagsSelector = createSelector(
   (state: RootState) => state.posts.tags.items,
-  (tags) => Array.from(new Set(tags))
+  (tags) => Array.from(new Set(tags)),
 );

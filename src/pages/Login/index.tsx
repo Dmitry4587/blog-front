@@ -1,37 +1,37 @@
-import React from "react";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import styles from "./Login.module.scss";
-import { useFormik } from "formik";
-import { loginShema } from "../../utils/validationsSchemas";
-import { authUser } from "../../redux/thunks/authThunks";
-import { useNavigate } from "react-router-dom";
-import { userSelector, userStatusSelector } from "../../redux/selectors/authSelectors";
-import ErrorMessage from "../../components/ErrorMessage";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { ItemStatus } from "../../redux/types";
+import React from 'react';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import { loginShema } from '../../utils/validationsSchemas';
+import { authUser } from '../../redux/thunks/authThunks';
+import { userSelector, userStatusSelector } from '../../redux/selectors/authSelectors';
+import ErrorMessage from '../../components/ErrorMessage';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { ItemStatus } from '../../redux/types';
+import styles from './Login.module.scss';
 
-export const Login = () => {
+const Login = () => {
   const navigate = useNavigate();
   const isAuth = useAppSelector(userSelector);
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState('');
   const userStatus = useAppSelector(userStatusSelector);
   const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
     validationSchema: loginShema,
     onSubmit: async (loginFormData) => {
       try {
         const data = await dispatch(authUser(loginFormData)).unwrap();
-        window.localStorage.setItem("token", data.token);
+        window.localStorage.setItem('token', data.token);
         formik.resetForm();
       } catch (e) {
-        if (typeof e === "string") {
+        if (typeof e === 'string') {
           setErrorMessage(e);
         }
       }
@@ -40,7 +40,7 @@ export const Login = () => {
 
   React.useEffect(() => {
     if (isAuth) {
-      return navigate("/");
+      return navigate('/');
     }
   }, [navigate, isAuth]);
 
@@ -75,12 +75,11 @@ export const Login = () => {
           helperText={formik.touched.password && formik.errors.password}
         />
         <Button
+          fullWidth
           disabled={Object.keys(formik.errors).length !== 0 || userStatus === ItemStatus.LOADING}
           type="submit"
           size="large"
-          variant="contained"
-          fullWidth
-        >
+          variant="contained">
           Войти
         </Button>
       </form>
@@ -88,3 +87,5 @@ export const Login = () => {
     </Paper>
   );
 };
+
+export default Login;

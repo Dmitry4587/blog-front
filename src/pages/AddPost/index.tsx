@@ -1,30 +1,34 @@
-import React from "react";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import "easymde/dist/easymde.min.css";
-import SimpleMDE from "react-simplemde-editor/dist/SimpleMdeReact";
-import styles from "./AddPost.module.scss";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import axios from "../../axios";
-import handleServerError from "../../utils/handleServerError";
-import ErrorMessage from "../../components/ErrorMessage";
-import ErrorPage from "../ErrorPage";
-import { nanoid } from "@reduxjs/toolkit";
-import { useAppSelector } from "../../redux/hooks";
-import { IPost, ItemStatus } from "../../redux/types";
-import CircularProgress from "@mui/material/CircularProgress";
-import TagsInput from "react-tagsinput";
-import { userStatusSelector } from "../../redux/selectors/authSelectors";
+import React from 'react';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import TagsInput from 'react-tagsinput';
+import SimpleMDE from 'react-simplemde-editor/dist/SimpleMdeReact';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { nanoid } from '@reduxjs/toolkit';
+import axios from '../../axios';
+import handleServerError from '../../utils/handleServerError';
+import ErrorMessage from '../../components/ErrorMessage';
+import ErrorPage from '../ErrorPage';
+import { useAppSelector } from '../../redux/hooks';
+import { IPost, ItemStatus } from '../../redux/types';
+import { userStatusSelector } from '../../redux/selectors/authSelectors';
+import styles from './AddPost.module.scss';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'easymde/dist/easymde.min.css';
 
-export const AddPost = () => {
-  const [text, setText] = React.useState("");
-  const [title, setTitle] = React.useState("");
-  const [img, setImg] = React.useState<{ url: string; imgId: string }>({ url: "", imgId: "" });
+const AddPost = () => {
+  const [text, setText] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [img, setImg] = React.useState<{ url: string; imgId: string }>({
+    url: '',
+    imgId: '',
+  });
   const [photoStatus, setPhotoStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
   const userStatus = useAppSelector(userStatusSelector);
   const [postStatus, setPostStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState('');
   const [tags, setTags] = React.useState<string[]>([]);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const { id } = useParams();
@@ -33,10 +37,10 @@ export const AddPost = () => {
   const options = React.useMemo(
     () => ({
       spellChecker: false,
-      maxHeight: "400px",
-      hideIcons: ["fullscreen", "preview", "side-by-side"] as const,
+      maxHeight: '400px',
+      hideIcons: ['fullscreen', 'preview', 'side-by-side'] as const,
       autofocus: true,
-      placeholder: "Введите текст...",
+      placeholder: 'Введите текст...',
       status: false,
       autosave: {
         uniqueId: nanoid(),
@@ -44,19 +48,19 @@ export const AddPost = () => {
         delay: 1000,
       },
     }),
-    []
+    [],
   );
 
   const onChangeText = React.useCallback((value: string) => {
     setText(value);
   }, []);
 
-  const handleChange = (tags: string[]) => {
-    setTags(tags);
+  const handleChange = (value: string[]) => {
+    setTags(value);
   };
 
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length < 40 && e.target.value !== " ") {
+    if (e.target.value.length < 40 && e.target.value !== ' ') {
       setTitle(e.target.value.toUpperCase());
     }
   };
@@ -65,7 +69,7 @@ export const AddPost = () => {
     try {
       setPhotoStatus(ItemStatus.LOADING);
       await axios.delete(`/upload/${img.imgId}`);
-      setImg({ url: "", imgId: "" });
+      setImg({ url: '', imgId: '' });
       setPhotoStatus(ItemStatus.LOADED);
     } catch (e) {
       setPhotoStatus(ItemStatus.LOADED);
@@ -73,6 +77,7 @@ export const AddPost = () => {
       setErrorMessage(error);
     }
   };
+
   const fetchPost = React.useCallback(async () => {
     if (id) {
       try {
@@ -85,8 +90,8 @@ export const AddPost = () => {
         if (data.tags) {
           setTags(data.tags);
         }
-      } catch (e) {
-        const error = handleServerError(e);
+      } catch (err) {
+        const error = handleServerError(err);
         setErrorMessage(error);
         setPostStatus(ItemStatus.ERROR);
       }
@@ -98,27 +103,28 @@ export const AddPost = () => {
   }, [fetchPost]);
 
   React.useEffect(() => {
-    if (!window.localStorage.getItem("token")) {
-      return navigate("/");
+    if (!window.localStorage.getItem('token')) {
+      return navigate('/');
     }
   }, [navigate]);
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let fileImg: File | null = null;
     if (e.target.files) {
-      fileImg = e.target.files[0];
+      const [imgfile] = e.target.files;
+      fileImg = imgfile;
     }
     if (fileImg) {
       try {
         setPhotoStatus(ItemStatus.LOADING);
         const formData = new FormData();
-        formData.append("image", fileImg);
-        const { data } = await axios.post<{ url: string; imgId: string }>("/upload", formData);
+        formData.append('image', fileImg);
+        const { data } = await axios.post<{ url: string; imgId: string }>('/upload', formData);
         setImg(data);
         setPhotoStatus(ItemStatus.LOADED);
-      } catch (e) {
+      } catch (err) {
         setPhotoStatus(ItemStatus.LOADED);
-        const error = handleServerError(e);
+        const error = handleServerError(err);
         setErrorMessage(error);
       }
     }
@@ -137,13 +143,13 @@ export const AddPost = () => {
       if (id) {
         await axios.patch(`/posts/${id}`, formObj);
       } else {
-        await axios.post(`/posts`, formObj);
+        await axios.post('/posts', formObj);
       }
       setPostStatus(ItemStatus.LOADED);
-      navigate("/");
-    } catch (e) {
+      navigate('/');
+    } catch (err) {
       setPostStatus(ItemStatus.LOADED);
-      const error = handleServerError(e);
+      const error = handleServerError(err);
       setErrorMessage(error);
     }
   };
@@ -153,7 +159,14 @@ export const AddPost = () => {
   }
   if (userStatus === ItemStatus.LOADING) {
     return (
-      <CircularProgress sx={{ position: "absolute", top: "50%", left: "50%", transform: "transalte(-50%, -50%)" }} />
+      <CircularProgress
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'transalte(-50%, -50%)',
+        }}
+      />
     );
   }
   if (userStatus === ItemStatus.ERROR) {
@@ -168,8 +181,7 @@ export const AddPost = () => {
             onClick={() => inputRef?.current?.click()}
             variant="outlined"
             size="large"
-            disabled={photoStatus === ItemStatus.LOADING}
-          >
+            disabled={photoStatus === ItemStatus.LOADING}>
             Загрузить превью
           </Button>
         )}
@@ -179,8 +191,7 @@ export const AddPost = () => {
             onClick={onClickRemoveImg}
             color="error"
             variant="outlined"
-            size="large"
-          >
+            size="large">
             Удалить
           </Button>
         )}
@@ -203,26 +214,33 @@ export const AddPost = () => {
           onChange={onChangeTitle}
         />
         <TagsInput
-          validationRegex={/^[^\s][a-zA-Zа-яА-Я\s]{2,30}$/}
-          onValidationReject={() => setErrorMessage("Не допустимое значение")}
+          validationRegex={/^[^!@#$%^&*()_\s\d][a-zA-Zа-яА-Я\s]{2,30}$/}
+          onValidationReject={() => setErrorMessage('Не допустимое значение')}
           onlyUnique
           className="react-tagsinput"
-          inputProps={{ placeholder: "теги" }}
+          inputProps={{ placeholder: 'теги' }}
           addOnBlur
           value={tags}
           onChange={handleChange}
         />
-        <SimpleMDE className={styles.editor} value={text} onChange={onChangeText} options={options} />
+        <SimpleMDE
+          className={styles.editor}
+          value={text}
+          onChange={onChangeText}
+          options={options}
+        />
         <div className={styles.buttons}>
           <Button
             disabled={
-              photoStatus === ItemStatus.LOADING || postStatus === ItemStatus.LOADING || !text.trim() || !title.trim()
+              photoStatus === ItemStatus.LOADING ||
+              postStatus === ItemStatus.LOADING ||
+              !text.trim() ||
+              !title.trim()
             }
             type="submit"
             size="large"
-            variant="contained"
-          >
-            {id ? "Сохранить" : "Опубликовать"}
+            variant="contained">
+            {id ? 'Сохранить' : 'Опубликовать'}
           </Button>
 
           <Link to="/">
@@ -234,3 +252,5 @@ export const AddPost = () => {
     </Paper>
   );
 };
+
+export default AddPost;

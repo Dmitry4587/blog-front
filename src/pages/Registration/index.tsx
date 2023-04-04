@@ -1,27 +1,26 @@
-import React from "react";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
-import styles from "./Login.module.scss";
-import { useFormik } from "formik";
-import { registrSchema } from "../../utils/validationsSchemas";
-import { registrUser, updateUser } from "../../redux/thunks/authThunks";
-import { Navigate, useNavigate } from "react-router-dom";
-import Skeleton from "@mui/material/Skeleton";
-import axios from "../../axios";
-import { useLocation } from "react-router-dom";
-import handleServerError from "../../utils/handleServerError";
-import ErrorMessage from "../../components/ErrorMessage";
-import { userStatusSelector } from "../../redux/selectors/authSelectors";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { ItemStatus } from "../../redux/types";
+import React from 'react';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import Skeleton from '@mui/material/Skeleton';
+import { useFormik } from 'formik';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { registrSchema } from '../../utils/validationsSchemas';
+import { registrUser, updateUser } from '../../redux/thunks/authThunks';
+import axios from '../../axios';
+import handleServerError from '../../utils/handleServerError';
+import ErrorMessage from '../../components/ErrorMessage';
+import { userStatusSelector } from '../../redux/selectors/authSelectors';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { ItemStatus } from '../../redux/types';
+import styles from './Login.module.scss';
 
-export const Registration = () => {
-  const [file, setFile] = React.useState<{ url: string; imgId: string }>({ url: "", imgId: "" });
+const Registration = () => {
+  const [file, setFile] = React.useState<{ url: string; imgId: string }>({ url: '', imgId: '' });
   const [fileStatus, setFileStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState('');
   const userStatus = useAppSelector(userStatusSelector);
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -29,25 +28,26 @@ export const Registration = () => {
   const ref = React.useRef<HTMLInputElement>(null);
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
-      password: "",
-      avatar: { url: "", imgId: "" },
+      name: '',
+      email: '',
+      password: '',
+      avatar: { url: '', imgId: '' },
     },
     validationSchema: registrSchema,
-    onSubmit: async (registrFormData) => {
+    onSubmit: async (userData) => {
       try {
+        const registrFormData = { ...userData };
         if (file) registrFormData.avatar = file;
 
-        if (location.pathname.includes("registr")) {
+        if (location.pathname.includes('registr')) {
           const data = await dispatch(registrUser(registrFormData)).unwrap();
-          window.localStorage.setItem("token", data.token);
+          window.localStorage.setItem('token', data.token);
         } else {
           await dispatch(updateUser({ ...registrFormData, avatar: file })).unwrap();
         }
-        navigate("/");
+        navigate('/');
       } catch (e) {
-        if (typeof e === "string") {
+        if (typeof e === 'string') {
           setErrorMessage(e);
         }
       }
@@ -55,27 +55,28 @@ export const Registration = () => {
   });
 
   const onChangeSetFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let file: File | null = null;
+    let fileImg: File | null = null;
     if (e.target.files) {
-      file = e.target.files[0];
+      const [img] = e.target.files;
+      fileImg = img;
     }
-    if (file) {
+    if (fileImg) {
       try {
         setFileStatus(ItemStatus.LOADING);
         const formData = new FormData();
-        formData.append("image", file);
-        const { data } = await axios.post<{ url: string; imgId: string }>("/upload", formData);
+        formData.append('image', fileImg);
+        const { data } = await axios.post<{ url: string; imgId: string }>('/upload', formData);
         setFile(data);
         setFileStatus(ItemStatus.LOADED);
-      } catch (e) {
+      } catch (err) {
         setFileStatus(ItemStatus.LOADED);
-        const error = handleServerError(e);
+        const error = handleServerError(err);
         setErrorMessage(error);
       }
     }
   };
 
-  if (window.localStorage.getItem("token") && location.pathname.includes("registr")) {
+  if (window.localStorage.getItem('token') && location.pathname.includes('registr')) {
     return <Navigate to="/" />;
   }
 
@@ -83,11 +84,11 @@ export const Registration = () => {
     try {
       setFileStatus(ItemStatus.LOADING);
       await axios.delete(`/upload/${file.imgId}`);
-      setFile({ url: "", imgId: "" });
+      setFile({ url: '', imgId: '' });
       setFileStatus(ItemStatus.LOADED);
-    } catch (e) {
+    } catch (err) {
       setFileStatus(ItemStatus.LOADED);
-      const error = handleServerError(e);
+      const error = handleServerError(err);
       setErrorMessage(error);
     }
   };
@@ -95,7 +96,7 @@ export const Registration = () => {
   return (
     <Paper className={styles.block} classes={{ root: styles.root }}>
       <Typography classes={{ root: styles.title }} variant="h5">
-        {location.pathname.includes("user") ? "Изменить аккаунт" : "Создание аккаунта"}
+        {location.pathname.includes('user') ? 'Изменить аккаунт' : 'Создание аккаунта'}
       </Typography>
 
       <form onSubmit={formik.handleSubmit}>
@@ -111,8 +112,7 @@ export const Registration = () => {
                   className={styles.button}
                   onClick={() => ref?.current?.click()}
                   size="medium"
-                  variant="contained"
-                >
+                  variant="contained">
                   Загрузить фото
                 </Button>
               )}
@@ -122,8 +122,7 @@ export const Registration = () => {
                   onClick={onClickDeletePhoto}
                   size="medium"
                   variant="contained"
-                  color="error"
-                >
+                  color="error">
                   Удалить фото
                 </Button>
               )}
@@ -172,12 +171,13 @@ export const Registration = () => {
           type="submit"
           size="large"
           variant="contained"
-          fullWidth
-        >
-          {location.pathname.includes("user") ? "Сохранить" : "Войти"}
+          fullWidth>
+          {location.pathname.includes('user') ? 'Сохранить' : 'Войти'}
         </Button>
       </form>
       {errorMessage && <ErrorMessage message={errorMessage} setError={setErrorMessage} />}
     </Paper>
   );
 };
+
+export default Registration;

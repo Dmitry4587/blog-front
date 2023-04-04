@@ -1,3 +1,6 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-shadow */
+
 export interface IUser {
   _id: string;
   name: string;
@@ -10,16 +13,16 @@ export interface IUser {
   favComments?: IComment[];
 }
 
-export interface IAuthUser {
-  user: IUser;
-  token: string;
-}
-
 export interface IComment {
   _id: string;
   user: IUser;
   text: string;
   commentLikes: number;
+}
+
+export interface IAuthUser {
+  user: IUser;
+  token: string;
 }
 
 export type TTags = string[];
@@ -47,7 +50,7 @@ export interface IPostRes {
 }
 
 export enum ItemStatus {
-  LOADING = "loading",
-  LOADED = "loaded",
-  ERROR = "error",
+  LOADING = 'loading',
+  LOADED = 'loaded',
+  ERROR = 'error',
 }

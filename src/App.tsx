@@ -1,15 +1,19 @@
-import Container from "@mui/material/Container";
-import React from "react";
-import { Header } from "./components";
-import { Home, FullPost, Registration, AddPost, Login } from "./pages";
-import { Routes, Route } from "react-router-dom";
-import { fetchUser } from "./redux/thunks/authThunks";
-import PostsByTag from "./components/PostsByTag";
-import Page404 from "./pages/Page404";
-import { useAppDispatch } from "./redux/hooks";
-import EditProfile from "./pages/EditProfile";
+import Container from '@mui/material/Container';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { fetchUser } from './redux/thunks/authThunks';
+import PostsByTag from './components/PostsByTag';
+import Page404 from './pages/Page404';
+import { useAppDispatch } from './redux/hooks';
+import EditProfile from './pages/EditProfile';
+import Header from './components/Header';
+import FullPost from './pages/FullPost';
+import AddPost from './pages/AddPost';
+import Registration from './pages/Registration';
+import Home from './pages/Home';
+import Login from './pages/Login';
 
-function App() {
+const App = () => {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
@@ -34,6 +38,6 @@ function App() {
       </Container>
     </>
   );
-}
+};
 
 export default App;

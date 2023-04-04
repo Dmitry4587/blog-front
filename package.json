@@ -40,12 +40,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -59,6 +53,10 @@
     ]
   },
   "devDependencies": {
-    "@types/react-tagsinput": "^3.19.9"
+    "@types/react-tagsinput": "^3.19.9",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-react": "^7.32.2",
+    "prettier": "2.8.7"
   }
 }

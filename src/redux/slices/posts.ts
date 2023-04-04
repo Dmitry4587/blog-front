@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { fetchAllPosts, fetchAllTags, fetchAllComments } from "../thunks/postThunks";
-import { IComment, IPost, IPostRes, TTags } from "../types";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { ItemStatus } from "../types";
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { fetchAllPosts, fetchAllTags, fetchAllComments } from '../thunks/postThunks';
+import { IComment, IPost, IPostRes, TTags, ItemStatus } from '../types';
 
 interface IInitialState {
   posts: {
@@ -39,7 +39,7 @@ const initialState: IInitialState = {
 };
 
 const postsSlice = createSlice({
-  name: "posts",
+  name: 'posts',
   initialState,
   reducers: {
     deletePostById: (state, action) => {

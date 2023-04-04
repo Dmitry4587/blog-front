@@ -1,20 +1,20 @@
-import React from "react";
-import clsx from "clsx";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Clear";
-import EditIcon from "@mui/icons-material/Edit";
-import EyeIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import styles from "./Post.module.scss";
-import { UserInfo } from "../UserInfo";
-import { PostSkeleton } from "./Skeleton";
-import { Link } from "react-router-dom";
-import { deletePostById } from "../../redux/slices/posts";
-import { fetchAllComments, fetchAllTags } from "../../redux/thunks/postThunks";
-import axios from "../../axios";
-import handleServerError from "../../utils/handleServerError";
-import { TTags } from "../../redux/types";
-import { useAppDispatch } from "../../redux/hooks";
+import React from 'react';
+import clsx from 'clsx';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Clear';
+import EditIcon from '@mui/icons-material/Edit';
+import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import CommentIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import { Link } from 'react-router-dom';
+import UserInfo from '../UserInfo';
+import { deletePostById } from '../../redux/slices/posts';
+import { fetchAllComments, fetchAllTags } from '../../redux/thunks/postThunks';
+import axios from '../../axios';
+import handleServerError from '../../utils/handleServerError';
+import { TTags } from '../../redux/types';
+import { useAppDispatch } from '../../redux/hooks';
+import { PostSkeleton } from './Skeleton';
+import styles from './Post.module.scss';
 
 interface IPostProps {
   id: string;
@@ -34,7 +34,7 @@ interface IPostProps {
   isEditable?: boolean;
 }
 
-export const Post = ({
+const Post = ({
   id,
   title,
   createdAt,
@@ -51,10 +51,10 @@ export const Post = ({
   const [isDel, setDelete] = React.useState(false);
   const dispatch = useAppDispatch();
 
-  const onClickDelete = async (id: string) => {
+  const onClickDelete = async (postId: string) => {
     try {
       setDelete(true);
-      await axios.delete(`/posts/${id}`);
+      await axios.delete(`/posts/${postId}`);
       dispatch(deletePostById(id));
       dispatch(fetchAllComments());
       dispatch(fetchAllTags());
@@ -86,10 +86,18 @@ export const Post = ({
       )}
 
       {imageUrl && (
-        <img src={imageUrl} className={clsx(styles.image, { [styles.imageFull]: isFullPost })} alt={title} />
+        <img
+          src={imageUrl}
+          className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
+          alt={title}
+        />
       )}
       <div className={styles.wrapper}>
-        <UserInfo fullName={user.fullName} avatarUrl={user.avatarUrl || ""} additionalText={createdAt} />
+        <UserInfo
+          fullName={user.fullName}
+          avatarUrl={user.avatarUrl || ''}
+          additionalText={createdAt}
+        />
         <div className={styles.indention}>
           <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
             {isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}
@@ -97,7 +105,7 @@ export const Post = ({
           <ul className={styles.tags}>
             {tags.map((name) => (
               <li key={name}>
-                <Link to={`/tags/${name}`}>#{name}</Link>
+                <Link to={`/tags/${name}`}>{`#${name}`}</Link>
               </li>
             ))}
           </ul>
@@ -117,3 +125,5 @@ export const Post = ({
     </div>
   );
 };
+
+export default Post;

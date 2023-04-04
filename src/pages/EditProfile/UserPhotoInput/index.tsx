@@ -1,41 +1,46 @@
-import React from "react";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
-import Skeleton from "@mui/material/Skeleton";
-import { ItemStatus } from "../../../redux/types";
-import axios from "../../../axios";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { updateUser } from "../../../redux/thunks/authThunks";
-import styles from "./Login.module.scss";
-import { Link } from "react-router-dom";
-import { userSelector, userStatusSelector } from "../../../redux/selectors/authSelectors";
+import React from 'react';
+import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import Skeleton from '@mui/material/Skeleton';
+import { Link } from 'react-router-dom';
+import { ItemStatus } from '../../../redux/types';
+import axios from '../../../axios';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { updateUser } from '../../../redux/thunks/authThunks';
+import { userSelector, userStatusSelector } from '../../../redux/selectors/authSelectors';
+import styles from './UserPhotoInput.module.scss';
 
-const UserPhotoInput = ({ setErrorMessage }: any) => {
+interface IUserPhotoInput {
+  setErrorMessage: (value: string) => void;
+}
+
+const UserPhotoInput = ({ setErrorMessage }: IUserPhotoInput) => {
   const [fileStatus, setFileStatus] = React.useState<ItemStatus>(ItemStatus.LOADED);
-  const [file, setFile] = React.useState<{ url: string; imgId: string }>({ url: "", imgId: "" });
+  const [file, setFile] = React.useState<{ url: string; imgId: string }>({ url: '', imgId: '' });
   const userStatus = useAppSelector(userStatusSelector);
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
   const ref = React.useRef<HTMLInputElement>(null);
 
   const onChangeSetFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let file: File | null = null;
+    let fileImg: File | null = null;
     if (e.target.files) {
-      file = e.target.files[0];
+      const [img] = e.target.files;
+      fileImg = img;
     }
-    if (file) {
+    if (fileImg) {
       try {
         setFileStatus(ItemStatus.LOADING);
         const formData = new FormData();
-        formData.append("image", file);
-        const { data } = await axios.post<{ url: string; imgId: string }>("/upload", formData);
+        formData.append('image', fileImg);
+        const { data } = await axios.post<{ url: string; imgId: string }>('/upload', formData);
         await dispatch(updateUser({ avatar: data })).unwrap();
         setFile(data);
         setFileStatus(ItemStatus.LOADED);
-      } catch (e) {
+      } catch (err) {
         setFileStatus(ItemStatus.LOADED);
-        if (typeof e === "string") {
-          setErrorMessage(e);
+        if (typeof err === 'string') {
+          setErrorMessage(err);
         }
       }
     }
@@ -45,13 +50,13 @@ const UserPhotoInput = ({ setErrorMessage }: any) => {
     try {
       setFileStatus(ItemStatus.LOADING);
       await axios.delete(`/upload/${file.imgId}`);
-      await dispatch(updateUser({ avatar: { url: "", imgId: "" } })).unwrap();
-      setFile({ url: "", imgId: "" });
+      await dispatch(updateUser({ avatar: { url: '', imgId: '' } })).unwrap();
+      setFile({ url: '', imgId: '' });
       setFileStatus(ItemStatus.LOADED);
-    } catch (e) {
+    } catch (err) {
       setFileStatus(ItemStatus.LOADED);
-      if (typeof e === "string") {
-        setErrorMessage(e);
+      if (typeof err === 'string') {
+        setErrorMessage(err);
       }
     }
   };
@@ -60,9 +65,9 @@ const UserPhotoInput = ({ setErrorMessage }: any) => {
     e.preventDefault();
     try {
       await dispatch(updateUser({ avatar: file })).unwrap();
-    } catch (e) {
-      if (typeof e === "string") {
-        setErrorMessage(e);
+    } catch (err) {
+      if (typeof err === 'string') {
+        setErrorMessage(err);
       }
     }
   };
@@ -88,8 +93,7 @@ const UserPhotoInput = ({ setErrorMessage }: any) => {
                   className={styles.button}
                   onClick={() => ref?.current?.click()}
                   size="large"
-                  variant="contained"
-                >
+                  variant="contained">
                   Загрузить фото
                 </Button>
               )}
@@ -99,8 +103,7 @@ const UserPhotoInput = ({ setErrorMessage }: any) => {
                   onClick={onClickDeletePhoto}
                   size="large"
                   variant="contained"
-                  color="error"
-                >
+                  color="error">
                   Удалить фото
                 </Button>
               )}
@@ -109,7 +112,12 @@ const UserPhotoInput = ({ setErrorMessage }: any) => {
         </div>
       </form>
       <Link to="/user">
-        <Button className={styles.button} size="large" color="error" type="submit" variant="contained">
+        <Button
+          className={styles.button}
+          size="large"
+          color="error"
+          type="submit"
+          variant="contained">
           Назад
         </Button>
       </Link>

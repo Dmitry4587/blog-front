@@ -1,27 +1,28 @@
-import React from "react";
-import { Skeleton } from "@mui/material";
-import { Post } from "../components/Post";
-import { Index } from "../components/AddComment";
-import { CommentsBlock } from "../components/CommentsBlock";
-import { fetchPostById } from "../redux/thunks/postThunks";
-import ReactMarkdown from "react-markdown";
-import { useLocation, useParams } from "react-router-dom";
-import { userSelector } from "../redux/selectors/authSelectors";
-import { formatDate } from "../utils/formatDate";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { IPost, ItemStatus } from "../redux/types";
-import { PostSkeleton } from "../components/Post/Skeleton";
-import ErrorPage from "./ErrorPage";
+import React from 'react';
+import { Skeleton } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+import { useLocation, useParams } from 'react-router-dom';
+import Post from '../components/Post';
+import Index from '../components/AddComment';
+import CommentsBlock from '../components/CommentsBlock';
+import { fetchPostById } from '../redux/thunks/postThunks';
+import { userSelector } from '../redux/selectors/authSelectors';
+import { formatDate } from '../utils/formatDate';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { IPost, ItemStatus } from '../redux/types';
+import { PostSkeleton } from '../components/Post/Skeleton';
+import ErrorPage from './ErrorPage';
 
-export const FullPost = () => {
+const FullPost = () => {
   const { id } = useParams();
   const location = useLocation();
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState('');
   const [postData, setPostData] = React.useState<IPost | null>(null);
   const [status, setStatus] = React.useState(ItemStatus.LOADING);
   const auth = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
-  const isOneComment = location.state && postData?.comments?.filter((item) => item._id === location.state);
+  const isOneComment =
+    location.state && postData?.comments?.filter((item) => item._id === location.state);
   const isLoading = status === ItemStatus.LOADING;
   const isError = status === ItemStatus.ERROR;
 
@@ -35,7 +36,7 @@ export const FullPost = () => {
       }
     } catch (e) {
       setStatus(ItemStatus.ERROR);
-      if (typeof e === "string") {
+      if (typeof e === 'string') {
         setErrorMessage(e);
       }
     }
@@ -63,9 +64,9 @@ export const FullPost = () => {
         <Post
           id={postData._id}
           title={postData.title}
-          imageUrl={postData.img?.url || ""}
+          imageUrl={postData.img?.url || ''}
           user={{
-            avatarUrl: postData.user.avatar?.url || "",
+            avatarUrl: postData.user.avatar?.url || '',
             fullName: postData.user.name,
           }}
           createdAt={formatDate(postData.createdAt)}
@@ -73,9 +74,8 @@ export const FullPost = () => {
           commentsCount={postData.commentsCount || 0}
           tags={postData.tags || []}
           isFullPost
-          isLoading={isLoading}
-        >
-          <ReactMarkdown children={postData.text} />
+          isLoading={isLoading}>
+          <ReactMarkdown>{postData.text}</ReactMarkdown>
         </Post>
 
         <CommentsBlock
@@ -83,13 +83,13 @@ export const FullPost = () => {
           isOneComment={Boolean(isOneComment)}
           comments={isOneComment || postData.comments || []}
           setPostData={setPostData}
-          isLoading={isLoading}
-        >
+          isLoading={isLoading}>
           {auth && !isOneComment && <Index setPostData={setPostData} />}
         </CommentsBlock>
       </>
     );
-  } else {
-    return null;
   }
+  return null;
 };
+
+export default FullPost;

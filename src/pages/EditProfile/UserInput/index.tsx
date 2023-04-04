@@ -1,51 +1,46 @@
-import React from "react";
-import TextField from "@mui/material/TextField";
-import styles from "./Login.module.scss";
-import { useFormik } from "formik";
-import { useNavigate, Link } from "react-router-dom";
-import { registrSchema } from "../../../utils/validationsSchemas";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import Button from "@mui/material/Button";
-import { updateUser } from "../../../redux/thunks/authThunks";
-import * as yup from "yup";
-import { userSelector } from "../../../redux/selectors/authSelectors";
+import React from 'react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { useFormik } from 'formik';
+import { Link } from 'react-router-dom';
+import * as yup from 'yup';
+import { registrSchema } from '../../../utils/validationsSchemas';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { updateUser } from '../../../redux/thunks/authThunks';
+import { userSelector } from '../../../redux/selectors/authSelectors';
+import styles from './UserInput.module.scss';
 
-const UserInput = ({
-  field,
-  name,
-  setErrorMessage,
-}: {
+interface IUserInputProps {
   field: keyof typeof registrSchema.fields;
   name: string;
-  setErrorMessage: any;
-}) => {
+  setErrorMessage: (value: string) => void;
+}
+
+const UserInput = ({ field, name, setErrorMessage }: IUserInputProps) => {
   const dispatch = useAppDispatch();
   const schema = yup.object({
-    email: field === "email" ? registrSchema.fields.email : yup.string(),
-    name: field === "name" ? registrSchema.fields.name : yup.string(),
-    password: field === "password" ? registrSchema.fields.password : yup.string(),
+    email: field === 'email' ? registrSchema.fields.email : yup.string(),
+    name: field === 'name' ? registrSchema.fields.name : yup.string(),
+    password: field === 'password' ? registrSchema.fields.password : yup.string(),
   });
-
   const isAuth = useAppSelector(userSelector);
-  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      [field]: "",
+      [field]: '',
     },
     validationSchema: schema,
     onSubmit: async (registrFormData) => {
       try {
         await dispatch(updateUser(registrFormData)).unwrap();
-        navigate(-1);
       } catch (e) {
-        if (typeof e === "string") {
+        if (typeof e === 'string') {
           setErrorMessage(e);
         }
       }
     },
   });
   React.useEffect(() => {
-    if (isAuth && field !== "password") {
+    if (isAuth && field !== 'password') {
       formik.setFieldValue(field, isAuth[field]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,17 +60,16 @@ const UserInput = ({
         helperText={formik.touched[field] && formik.errors[field]}
       />
       <Button
-        className={styles.button1}
+        className={styles.button}
         disabled={!!Object.keys(formik.errors).length}
         type="submit"
         size="large"
         variant="contained"
-        fullWidth
-      >
+        fullWidth>
         Сохранить
       </Button>
       <Link to="/user">
-        <Button className={styles.button1} color="error" size="large" variant="contained" fullWidth>
+        <Button className={styles.button} color="error" size="large" variant="contained" fullWidth>
           Назад
         </Button>
       </Link>
