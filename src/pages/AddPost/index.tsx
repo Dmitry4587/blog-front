@@ -214,7 +214,7 @@ const AddPost = () => {
           onChange={onChangeTitle}
         />
         <TagsInput
-          validationRegex={/^[^!@#$%^&*()_\s\d][a-zA-Zа-яА-Я\s]{2,30}$/}
+          validationRegex={/^[^!@#$%^&*()_\s\d][a-zA-Zа-яА-Я]{2,30}$/}
           onValidationReject={() => setErrorMessage('Не допустимое значение')}
           onlyUnique
           className="react-tagsinput"
