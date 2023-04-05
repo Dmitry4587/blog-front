@@ -40,9 +40,11 @@ const Header = () => {
 
     return (
       <>
-        <Button onClick={onClickLogOut} variant="outlined">
-          Выйти
-        </Button>
+        <Link to="/">
+          <Button onClick={onClickLogOut} variant="outlined">
+            Выйти
+          </Button>
+        </Link>
         <Link to="posts/add-post">
           <Button className={styles.btn} variant="contained">
             Написать статью

@@ -16,7 +16,7 @@ const Search = ({ tag, search, setSearch }: ISearchProps) => (
     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
     id="input-with-icon-textfield"
     value={search}
-    placeholder={tag ? 'Поиск статей по тегу' : 'Искать по всех статьях'}
+    placeholder={tag ? 'Поиск статей по тегу' : 'Искать во всех статьях'}
     InputProps={{
       startAdornment: (
         <InputAdornment position="start">
